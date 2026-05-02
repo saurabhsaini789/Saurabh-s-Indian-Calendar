@@ -1,0 +1,511 @@
+:root {
+  /* Premium Palette */
+  --primary: #FF9933;
+  --primary-dark: #E67E22;
+  --secondary: #138808;
+  --accent: #FFD700;
+  
+  /* Dark Theme */
+  --bg: #0f172a;
+  --card-bg: rgba(30, 41, 59, 0.8);
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.08);
+  --holiday-bg: rgba(255, 153, 51, 0.12);
+  --today-bg: rgba(59, 130, 246, 0.15);
+  --today-border: #3b82f6;
+  --surface: #1e293b;
+  --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='light'] {
+  --bg: #f1f5f9;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --border: rgba(0, 0, 0, 0.05);
+  --holiday-bg: rgba(255, 153, 51, 0.08);
+  --today-bg: rgba(59, 130, 246, 0.08);
+  --today-border: #2563eb;
+  --surface: #ffffff;
+  --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  color: inherit;
+  font-family: inherit;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  max-width: 500px; /* Mobile focused max width */
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  #root {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .sticky-header {
+    padding: 0.75rem 1rem;
+  }
+  .calendar-container {
+    padding: 0.25rem;
+  }
+  .month-year-title h1 {
+    font-size: 1.1rem;
+  }
+  .gregorian-day {
+    font-size: 0.85rem;
+  }
+  .tithi-label {
+    font-size: 0.5rem;
+  }
+}
+
+/* Glassmorphism */
+.glass {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+/* Header */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 20px -5px rgba(0,0,0,0.1);
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.month-year-title {
+  text-align: center;
+  flex: 1;
+}
+
+.month-year-title h1 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hindu-month-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.nav-btn:active {
+  background: var(--border);
+}
+
+/* Calendar Grid */
+.calendar-container {
+  padding: 0.5rem;
+  touch-action: pan-y; /* Allow vertical scroll, but we'll handle horizontal swipe */
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+  gap: 2px;
+}
+
+.weekday-label {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 0.75rem 0;
+  text-transform: uppercase;
+}
+
+.app-main {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.day-cell {
+  aspect-ratio: 1 / 1.1;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.2rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.day-cell:active {
+  transform: scale(0.92);
+  background: var(--border);
+}
+
+.day-cell.today {
+  background: var(--today-bg);
+  color: var(--today-border);
+  font-weight: 800;
+}
+
+.day-cell.today .gregorian-day {
+  background: var(--today-border);
+  color: #fff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-cell.has-festival {
+  background: var(--holiday-bg);
+}
+
+.gregorian-day {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.tithi-label {
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.festival-label-truncated {
+  font-size: 0.5rem;
+  color: var(--primary);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+  margin-top: 1px;
+}
+
+.festival-indicator {
+  width: 4px;
+  height: 4px;
+  background: var(--primary);
+  border-radius: 50%;
+  margin-top: 3px;
+}
+
+.moon-icon {
+  font-size: 0.7rem;
+  margin-top: 2px;
+}
+
+/* Festival List Section */
+.festivals-section {
+  padding: 1.5rem;
+  background: var(--bg);
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.festival-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.festival-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+.festival-date-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  height: 50px;
+  background: var(--holiday-bg);
+  border-radius: 12px;
+  color: var(--primary);
+}
+
+.festival-date-box .day {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.festival-date-box .month {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.festival-info {
+  flex: 1;
+}
+
+.festival-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.festival-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Bottom Sheet / Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+.bottom-sheet {
+  width: 100%;
+  max-width: 500px;
+  background: var(--surface);
+  border-radius: 24px 24px 0 0;
+  padding: 1.5rem;
+  position: relative;
+  transform: translateY(0);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+}
+
+.handle {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: -0.5rem auto 1.5rem auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-date {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.close-btn {
+  background: var(--border);
+  border: none;
+  padding: 0.5rem;
+  border-radius: 50%;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.detail-row {
+  margin-bottom: 1.25rem;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.detail-value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.festival-badge {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Lang Toggle */
+.controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.toggle-pill {
+  display: flex;
+  background: var(--border);
+  padding: 3px;
+  border-radius: 100px;
+}
+
+.toggle-item {
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.toggle-item.active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Empty Cell */
+.day-cell.empty {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Swipe Transition Classes (for potential use with transition-group) */
+.slide-enter {
+  transform: translateX(100%);
+}
+.slide-enter-active {
+  transform: translateX(0);
+  transition: transform 0.3s ease-out;
+}
+.slide-exit {
+  transform: translateX(0);
+}
+.slide-exit-active {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in;
+}
+
+/* Loader */
+.loader-full {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
