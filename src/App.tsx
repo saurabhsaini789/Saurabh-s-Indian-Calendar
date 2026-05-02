@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
-import { ChevronLeft, ChevronRight, Moon, Sun, X, Info, Calendar as CalendarIcon, Languages } from 'lucide-react';
-import { HINDU_MONTHS, GREGORIAN_MONTHS, WEEKDAYS, UI_LABELS, TITHI_NAMES } from './constants';
+import { ChevronLeft, ChevronRight, Moon, Sun, X, Info, Calendar as CalendarIcon } from 'lucide-react';
+import { HINDU_MONTHS, GREGORIAN_MONTHS, WEEKDAYS, UI_LABELS } from './constants';
 import { getHinduDetails, type HinduDetails } from './utils/hinduCalendar';
 
 // --- API CONFIGURATION ---
