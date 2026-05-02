@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import { ChevronLeft, ChevronRight, Moon, Sun, X, Info, Calendar as CalendarIcon } from 'lucide-react';
-import { HINDU_MONTHS, GREGORIAN_MONTHS, WEEKDAYS, UI_LABELS } from './constants';
+import { GREGORIAN_MONTHS, WEEKDAYS, UI_LABELS } from './constants';
 import { getHinduDetails, type HinduDetails } from './utils/hinduCalendar';
 
 // --- API CONFIGURATION ---
@@ -56,7 +56,7 @@ const App: React.FC = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => setLocation({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
-        (err) => console.warn("Location access denied, using default (Delhi)"),
+        (_err) => console.warn("Location access denied, using default (Delhi)"),
         { enableHighAccuracy: false, timeout: 5000 }
       );
     }
@@ -93,7 +93,7 @@ const App: React.FC = () => {
         localStorage.setItem(cacheKey, JSON.stringify(data));
         setYearHolidays(data);
       }
-    } catch (err) {
+    } catch (_err) {
       setError(UI_LABELS[lang].error);
     } finally {
       setLoading(false);
