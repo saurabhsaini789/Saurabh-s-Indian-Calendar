@@ -1,16 +1,16 @@
 export const HINDU_MONTHS: Record<number, { en: string; hi: string }> = {
-  0: { en: "Pausha / Magha", hi: "पौष / माघ" },
-  1: { en: "Magha / Phalguna", hi: "माघ / फाल्गुन" },
-  2: { en: "Phalguna / Chaitra", hi: "फाल्गुन / चैत्र" },
-  3: { en: "Chaitra / Vaishakha", hi: "चैत्र / वैशाख" },
-  4: { en: "Vaishakha / Jyeshtha", hi: "वैशाख / ज्येष्ठ" },
-  5: { en: "Jyeshtha / Ashadha", hi: "ज्येष्ठ / आषाढ़" },
-  6: { en: "Ashadha / Shravana", hi: "आषाढ़ / श्रावण" },
-  7: { en: "Shravana / Bhadrapada", hi: "श्रावण / भाद्रपद" },
-  8: { en: "Bhadrapada / Ashwin", hi: "भाद्रपद / अश्विन" },
-  9: { en: "Ashwin / Kartika", hi: "अश्विन / कार्तिक" },
-  10: { en: "Kartika / Margashirsha", hi: "कार्तिक / मार्गशीर्ष" },
-  11: { en: "Margashirsha / Pausha", hi: "मार्गशीर्ष / पौष" },
+  0: { en: "Chaitra", hi: "चैत्र" },
+  1: { en: "Vaishakha", hi: "वैशाख" },
+  2: { en: "Jyeshtha", hi: "ज्येष्ठ" },
+  3: { en: "Ashadha", hi: "आषाढ़" },
+  4: { en: "Shravana", hi: "श्रावण" },
+  5: { en: "Bhadrapada", hi: "भाद्रपद" },
+  6: { en: "Ashwin", hi: "अश्विन" },
+  7: { en: "Kartika", hi: "कार्तिक" },
+  8: { en: "Margashirsha", hi: "मार्गशीर्ष" },
+  9: { en: "Pausha", hi: "पौष" },
+  10: { en: "Magha", hi: "माघ" },
+  11: { en: "Phalguna", hi: "फाल्गुन" },
 };
 
 export const TITHI_NAMES: Record<string, string[]> = {

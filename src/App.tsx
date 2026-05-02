@@ -46,9 +46,21 @@ const App: React.FC = () => {
   });
   const [selectedDay, setSelectedDay] = useState<DayData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [location, setLocation] = useState<{lat: number; lon: number} | null>(null);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+
+  // Geolocation
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setLocation({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+        (err) => console.warn("Location access denied, using default (Delhi)"),
+        { enableHighAccuracy: false, timeout: 5000 }
+      );
+    }
+  }, []);
 
   // Touch handlers for swipe
   const touchStartX = useRef<number | null>(null);
@@ -106,7 +118,7 @@ const App: React.FC = () => {
 
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(year, month, d);
-      const hindu = getHinduDetails(date);
+      const hindu = getHinduDetails(date, location?.lat, location?.lon);
       const holidays = yearHolidays.filter(h => 
         h.date.datetime.year === year && 
         h.date.datetime.month === month + 1 && 
@@ -125,7 +137,7 @@ const App: React.FC = () => {
       });
     }
     return days;
-  }, [year, month, yearHolidays]);
+  }, [year, month, yearHolidays, location]);
 
   const festivalsThisMonth = useMemo(() => {
     return calendarDays.filter(d => !d.isEmpty && d.holidays.length > 0);
@@ -174,8 +186,10 @@ const App: React.FC = () => {
             <ChevronLeft size={24} />
           </button>
           <div className="month-year-title">
-            <div className="hindu-month-label">{HINDU_MONTHS[month][lang]}</div>
-            <h1>{GREGORIAN_MONTHS[lang][month]} {year}</h1>
+            <div className="hindu-month-label">
+              {calendarDays.find(d => !d.isEmpty)?.hindu.masaName[lang]} {calendarDays.find(d => !d.isEmpty)?.hindu.year}
+            </div>
+            <h1 style={{fontSize: '1.1rem', opacity: 0.8}}>{GREGORIAN_MONTHS[lang][month]} {year}</h1>
           </div>
           <button className="nav-btn" onClick={() => changeMonth(1)}>
             <ChevronRight size={24} />
@@ -251,7 +265,7 @@ const App: React.FC = () => {
                 </div>
                 <div className="festival-info">
                   <div className="festival-name">{d.holidays[0].name}</div>
-                  <div className="festival-desc">{d.hindu.tithiName[lang]} • {HINDU_MONTHS[month][lang]}</div>
+                  <div className="festival-desc">{d.hindu.tithiName[lang]} • {d.hindu.masaName[lang]}</div>
                 </div>
               </div>
             ))
@@ -279,16 +293,19 @@ const App: React.FC = () => {
 
             <div className="modal-body">
               <div className="detail-row">
-                <div className="detail-label">{UI_LABELS[lang].tithi}</div>
-                <div className="detail-value">
-                  {selectedDay.hindu.tithiName[lang]} 
-                  {selectedDay.hindu.isPurnima ? ' (🌕 Full Moon)' : ''}
-                  {selectedDay.hindu.isAmavasya ? ' (🌑 New Moon)' : ''}
+                <div className="detail-label">{UI_LABELS[lang].month}</div>
+                <div className="detail-value" style={{color: 'var(--accent)', fontWeight: 'bold'}}>
+                  {selectedDay.hindu.masaName[lang]} {selectedDay.hindu.year} (Vikram Samvat)
                 </div>
               </div>
+
               <div className="detail-row">
-                <div className="detail-label">{UI_LABELS[lang].month}</div>
-                <div className="detail-value">{HINDU_MONTHS[month][lang]}</div>
+                <div className="detail-label">{UI_LABELS[lang].tithi}</div>
+                <div className="detail-value">
+                  {selectedDay.hindu.tithiName[lang]} ({selectedDay.hindu.paksha} Paksha)
+                  {selectedDay.hindu.isPurnima ? ' (🌕 Purnima)' : ''}
+                  {selectedDay.hindu.isAmavasya ? ' (🌑 Amavasya)' : ''}
+                </div>
               </div>
               
               {selectedDay.holidays.length > 0 && (
