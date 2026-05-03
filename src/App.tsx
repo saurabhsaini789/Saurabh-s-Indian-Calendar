@@ -332,7 +332,7 @@ const App: React.FC = () => {
       )}
 
       <footer style={{textAlign: 'center', padding: '2rem', color: 'var(--text-muted)', fontSize: '0.8rem'}}>
-        🕉️ Saurabh's Indian Hindu Calendar • 2026
+        🕉️ Created by <a href="https://iamsaurabhsaini.com/" target="_blank" rel="noopener noreferrer" style={{color: 'inherit', textDecoration: 'underline'}}>Saurabh Saini</a>
       </footer>
     </div>
   );
